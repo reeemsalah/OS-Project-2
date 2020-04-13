@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
@@ -11,8 +13,8 @@ import java.util.concurrent.Semaphore;
 public class OperatingSystem {
 	
 	public static ArrayList<Thread> ProcessTable;
-
-//	public static int activeProcess= 0;
+	private static Queue<Thread> readyQ;
+	public static int activeProcess= 0;
 	//system calls:
 	// 1- Read from File
 	@SuppressWarnings("unused")
@@ -68,14 +70,15 @@ public class OperatingSystem {
 	private static void createProcess(int processID){
 		Process p = new Process(processID);
 		ProcessTable.add(p);
+		readyQ.add(p);
 		Process.setProcessState(p,ProcessState.Ready);
-		p.start();
+		//p.start();
 		
 	}
 	
 	public static void main(String[] args) {
    		ProcessTable = new ArrayList<Thread>();
-
+   		readyQ=new LinkedList<Thread>();
 		createProcess(1);
 		createProcess(2);
 		createProcess(3);
