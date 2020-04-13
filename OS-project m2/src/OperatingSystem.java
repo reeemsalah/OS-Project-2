@@ -14,6 +14,8 @@ public class OperatingSystem {
 	
 	public static ArrayList<Thread> ProcessTable;
 	private static Queue<Thread> readyQ;
+	private static Queue<Thread> blockedQ;
+
 	public static int activeProcess= 0;
 	//system calls:
 	// 1- Read from File
