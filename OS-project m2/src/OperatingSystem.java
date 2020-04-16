@@ -13,10 +13,21 @@ import java.util.concurrent.Semaphore;
 public class OperatingSystem {
 	
 	public static ArrayList<Thread> ProcessTable;
+	//Scheduling algorithm: FCFS
 	private static Queue<Thread> readyQ;
-	private static Queue<Thread> blockedQ;
-
+	//Blocked Queues foe each resource
+	private static Queue<Thread> blockedQReadFile;
+	private static Queue<Thread> blockedQWriteFile;
+	private static Queue<Thread> blockedQPrint;
+	private static Queue<Thread> blockedQTextInput;
+	//Semaphores for each resource, initially they are available
+	private static int semReadFile=1;
+	private static int semWriteFile=1;
+	private static int semPrint=1;
+	private static int semTextInput=1;
+	//counter for the number of active processes
 	public static int activeProcess= 0;
+	
 	//system calls:
 	// 1- Read from File
 	@SuppressWarnings("unused")
@@ -76,6 +87,39 @@ public class OperatingSystem {
 		Process.setProcessState(p,ProcessState.Ready);
 		//p.start();
 		
+	}
+	public static void semPrintWait(Process p)
+	{
+		//TODO to be completed 
+	}
+	
+	public static void semPrintPost(Process p)
+	{
+		//TODO to be completed 
+	}
+	public static void semReadFiletWait(Process p)
+	{
+		//TODO to be completed 
+	}
+	public static void semsReadFilePost(Process p)
+	{
+		//TODO to be completed 
+	}
+	public static void semWriteFileWait(Process p)
+	{
+		//TODO to be completed 
+	}
+	public static void semWriteFilePost(Process p)
+	{
+		//TODO to be completed 
+	}
+	public static void semTextInputWait(Process p)
+	{
+		//TODO to be completed 
+	}
+	public static void semsemTextInputPost(Process p)
+	{
+		//TODO to be completed 
 	}
 	
 	public static void main(String[] args) {
