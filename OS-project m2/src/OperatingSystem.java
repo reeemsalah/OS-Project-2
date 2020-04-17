@@ -15,6 +15,8 @@ public class OperatingSystem {
 	public static ArrayList<Thread> ProcessTable;
 	//Scheduling algorithm: FCFS
 	private static Queue<Thread> readyQ;
+	//Queue for blocked processes
+	private static Queue<Thread>blockedQ;
 	//Blocked Queues foe each resource
 	private static Queue<Thread> blockedQReadFile;
 	private static Queue<Thread> blockedQWriteFile;
@@ -26,8 +28,8 @@ public class OperatingSystem {
 	private static int semPrint=1;
 	private static int semTextInput=1;
 	//counter for the number of active processes
-	
 	public static int activeProcess= 0;
+	
 	
 	//system calls:
 	// 1- Read from File
@@ -89,12 +91,12 @@ public class OperatingSystem {
 		//p.start();
 		
 	}
+	//Semaphores
+	/**
+	 * 
+	 * @param p the process that wants to access the take the semaphore
+	 */
 	public static void semPrintWait(Process p)
-	{
-		//TODO to be completed 
-	}
-	
-	public static void semPrintPost(Process p)
 	{
 		//TODO to be completed 
 	}
@@ -102,19 +104,29 @@ public class OperatingSystem {
 	{
 		//TODO to be completed 
 	}
-	public static void semsReadFilePost(Process p)
-	{
-		//TODO to be completed 
-	}
 	public static void semWriteFileWait(Process p)
 	{
 		//TODO to be completed 
 	}
-	public static void semWriteFilePost(Process p)
+	public static void semTextInputWait(Process p)
 	{
 		//TODO to be completed 
 	}
-	public static void semTextInputWait(Process p)
+	/**
+	 * 
+	 * @param p the process that wants to post the semaphore
+	 */
+	public static void semPrintPost(Process p)
+	{
+		//TODO to be completed 
+	}
+	
+	public static void semsReadFilePost(Process p)
+	{
+		//TODO to be completed 
+	}
+	
+	public static void semWriteFilePost(Process p)
 	{
 		//TODO to be completed 
 	}
@@ -126,6 +138,11 @@ public class OperatingSystem {
 	public static void main(String[] args) {
    		ProcessTable = new ArrayList<Thread>();
    		readyQ=new LinkedList<Thread>();
+   		blockedQ=new LinkedList<Thread>();
+   		blockedQPrint=new LinkedList<Thread>();
+   		blockedQReadFile=new LinkedList<Thread>();
+   		blockedQTextInput=new LinkedList<Thread>();
+   		blockedQWriteFile=new LinkedList<Thread>();
 		createProcess(1);
 		createProcess(2);
 		createProcess(3);
