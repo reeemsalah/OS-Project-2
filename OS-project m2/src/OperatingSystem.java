@@ -26,6 +26,7 @@ public class OperatingSystem {
 	private static int semPrint=1;
 	private static int semTextInput=1;
 	//counter for the number of active processes
+	
 	public static int activeProcess= 0;
 	
 	//system calls:
