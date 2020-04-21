@@ -91,34 +91,47 @@ public class OperatingSystem {
 	 * @param p the process that wants to access the take the semaphore
 	 */
 	public static void semPrintWait(Process p) {
+
 		if (semPrint == 1)
 			semPrint--;
-		else
+		else {
+			p.setProcessState(p, ProcessState.Waiting);
 			blockedQPrint.add(p);
+		}
+
 
 	}
 
 	public static void semReadFiletWait(Process p) {
+
 		if (semReadFile == 1)
 			semReadFile--;
-		else
+		else {
+			p.setProcessState(p, ProcessState.Waiting);
 			blockedQReadFile.add(p);
+		}
+
 
 	}
 
 	public static void semWriteFileWait(Process p) {
 		if (semWriteFile == 1)
 			semWriteFile--;
-		else
-			blockedQWriteFile.add(p);
+		else {
+			p.setProcessState(p, ProcessState.Waiting);
+			blockedQTextInput.add(p);		}
 
 	}
 
 	public static void semTextInputWait(Process p) {
+
 		if (semTextInput == 1)
 			semTextInput--;
-		else
+		else {
+			p.setProcessState(p, ProcessState.Waiting);
 			blockedQTextInput.add(p);
+		}
+
 	}
 
 	/**

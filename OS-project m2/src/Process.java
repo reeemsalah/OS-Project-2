@@ -12,6 +12,7 @@ public class Process extends Thread {
 	@Override
 	public void run() {
 		this.setProcessState(this, ProcessState.Running);
+		System.out.println("Process "+this.processID+" is"+this.status);
 		switch (processID) {
 		case 1:
 			process1();
