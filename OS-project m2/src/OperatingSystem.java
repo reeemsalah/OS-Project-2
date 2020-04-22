@@ -100,7 +100,6 @@ public class OperatingSystem {
 				while (true) {
 					if (Process.getProcessState(p) == ProcessState.Waiting) {
 						System.out.println("Process " + p.processID + " is suspended");
-						
 						ProcessTable.remove(p);
 						break;
 					}
