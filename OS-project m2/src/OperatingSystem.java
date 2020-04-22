@@ -97,7 +97,7 @@ public class OperatingSystem {
 				System.out.println("Process " + p.processID + " starts");
 				p.start();
 			}
-				while (true) {
+				while (Process.getProcessState(p) == ProcessState.Running) {
 					if (Process.getProcessState(p) == ProcessState.Waiting) {
 						System.out.println("Process " + p.processID + " is suspended");
 
