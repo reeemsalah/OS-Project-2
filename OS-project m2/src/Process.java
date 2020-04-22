@@ -4,15 +4,20 @@ public class Process extends Thread {
 
 	public int processID;
 	ProcessState status = ProcessState.New;
+	public boolean suspended;
 
 	public Process(int m) {
 		processID = m;
+		suspended=false;
+	}
+	public boolean isSuspended()
+	{
+		return suspended;
 	}
 
 	@Override
 	public void run() {
 		this.setProcessState(this, ProcessState.Running);
-		System.out.println("Process "+this.processID+" is"+this.status);
 		switch (processID) {
 		case 1:
 			process1();
@@ -32,43 +37,48 @@ public class Process extends Thread {
 		}
 
 	}
+	public void setSuspended(boolean value)
+	{
+		suspended=value;
+		
+	}
 
 	private void process1() {
 
-		OperatingSystem.semPrintWait(this);
+		OperatingSystem.writeFile.semWait(this);
 		OperatingSystem.printText("Enter File Name: ");
-		OperatingSystem.semPrintPost();
-
-		OperatingSystem.semReadFiletWait(this);
-		OperatingSystem.semPrintWait(this);
+		OperatingSystem.writeFile.semPost();
+		
+		OperatingSystem.readFile.semWait(this);
+		OperatingSystem.print.semWait(this);
 		OperatingSystem.printText(OperatingSystem.readFile(OperatingSystem.TakeInput()));
-		OperatingSystem.semReadFilePost();
-		OperatingSystem.semPrintPost();
+		OperatingSystem.readFile.semPost();
+		OperatingSystem.print.semPost();
 
 		setProcessState(this, ProcessState.Terminated);
 	}
 
 	private void process2() {
 
-		OperatingSystem.semPrintWait(this);
+		OperatingSystem.print.semWait(this);
 		OperatingSystem.printText("Enter File Name: ");
-		OperatingSystem.semPrintPost();
+		OperatingSystem.print.semPost();
 
-		OperatingSystem.semTextInputWait(this);
+		OperatingSystem.textInput.semWait(this);
 		String filename = OperatingSystem.TakeInput();
-		OperatingSystem.semTextInputPost();
+		OperatingSystem.textInput.semPost();
 
-		OperatingSystem.semPrintWait(this);
+		OperatingSystem.print.semWait(this);
 		OperatingSystem.printText("Enter Data: ");
-		OperatingSystem.semPrintPost();
+		OperatingSystem.print.semPost();
 
-		OperatingSystem.semTextInputWait(this);
+		OperatingSystem.textInput.semWait(this);
 		String data = OperatingSystem.TakeInput();
-		OperatingSystem.semTextInputPost();
+		OperatingSystem.textInput.semPost();
 
-		OperatingSystem.semWriteFileWait(this);
+		OperatingSystem.writeFile.semWait(this);
 		OperatingSystem.writefile(filename, data);
-		OperatingSystem.semWriteFilePost();
+		OperatingSystem.writeFile.semPost();
 
 		setProcessState(this, ProcessState.Terminated);
 	}
@@ -76,9 +86,9 @@ public class Process extends Thread {
 	private void process3() {
 		int x = 0;
 		while (x < 301) {
-			OperatingSystem.semPrintWait(this);
+			OperatingSystem.print.semWait(this);
 			OperatingSystem.printText(x + "\n");
-			OperatingSystem.semPrintPost();
+			OperatingSystem.print.semPost();
 			
 			x++;
 		}
@@ -89,9 +99,9 @@ public class Process extends Thread {
 
 		int x = 500;
 		while (x < 1001) {
-			OperatingSystem.semPrintWait(this);
+			OperatingSystem.print.semWait(this);
 			OperatingSystem.printText(x + "\n");
-			OperatingSystem.semPrintPost();
+			OperatingSystem.print.semPost();
 
 			x++;
 		}
@@ -100,21 +110,21 @@ public class Process extends Thread {
 
 	private void process5() {
 
-		OperatingSystem.semPrintWait(this);
+		OperatingSystem.print.semWait(this);
 		OperatingSystem.printText("Enter LowerBound: ");
-		OperatingSystem.semPrintPost();
+		OperatingSystem.print.semPost();
 
-		OperatingSystem.semTextInputWait(this);
+		OperatingSystem.textInput.semWait(this);
 		String lower = OperatingSystem.TakeInput();
-		OperatingSystem.semTextInputPost();
+		OperatingSystem.textInput.semPost();
 		
-		OperatingSystem.semPrintWait(this);
+		OperatingSystem.print.semWait(this);
 		OperatingSystem.printText("Enter UpperBound: ");
-		OperatingSystem.semPrintPost();
+		OperatingSystem.print.semPost();
 		
-		OperatingSystem.semTextInputWait(this);
+		OperatingSystem.textInput.semWait(this);
 		String upper = OperatingSystem.TakeInput();
-		OperatingSystem.semTextInputPost();
+		OperatingSystem.textInput.semPost();
 
 		int lowernbr = Integer.parseInt(lower);
 		int uppernbr = Integer.parseInt(upper);
@@ -124,18 +134,16 @@ public class Process extends Thread {
 			data += lowernbr++ + "\n";
 		}
 		
-		OperatingSystem.semWriteFileWait(this);
+		OperatingSystem.writeFile.semWait(this);
 		OperatingSystem.writefile("P5.txt", data);
-		OperatingSystem.semWriteFilePost();
+		OperatingSystem.writeFile.semPost();
 		
 		setProcessState(this, ProcessState.Terminated);
 	}
 
 	public static void setProcessState(Process p, ProcessState s) {
 		p.status = s;
-		if (s == ProcessState.Terminated) {
-			OperatingSystem.ProcessTable.remove(OperatingSystem.ProcessTable.indexOf(p));
-		}
+		
 		
 	}
 

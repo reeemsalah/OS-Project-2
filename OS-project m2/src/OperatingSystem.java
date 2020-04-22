@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.Thread.State;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -12,18 +13,12 @@ import java.util.concurrent.Semaphore;
 public class OperatingSystem {
 
 	public static ArrayList<Thread> ProcessTable;
-	// Scheduling algorithm: FCFS
-	private static Queue<Thread> readyQ;
-	// Blocked Queues foe each resource
-	private static Queue<Thread> blockedQReadFile;
-	private static Queue<Thread> blockedQWriteFile;
-	private static Queue<Thread> blockedQPrint;
-	private static Queue<Thread> blockedQTextInput;
+
 	// Semaphores for each resource, initially they are available
-	private static int semReadFile = 1;
-	private static int semWriteFile = 1;
-	private static int semPrint = 1;
-	private static int semTextInput = 1;
+	public static MySemaphore readFile = new MySemaphore();
+	public static MySemaphore writeFile = new MySemaphore();
+	public static MySemaphore print = new MySemaphore();
+	public static MySemaphore textInput = new MySemaphore();
 	// counter for the number of active processes
 	public static int activeProcess = 0;
 
@@ -79,89 +74,9 @@ public class OperatingSystem {
 	private static void createProcess(int processID) {
 		Process p = new Process(processID);
 		ProcessTable.add(p);
-		readyQ.add(p);
 		Process.setProcessState(p, ProcessState.Ready);
 		// p.start();
 
-	}
-
-	// Semaphores
-	/**
-	 * 
-	 * @param p the process that wants to access the take the semaphore
-	 */
-	public static void semPrintWait(Process p) {
-
-		if (semPrint == 1)
-			semPrint--;
-		else {
-			p.setProcessState(p, ProcessState.Waiting);
-			blockedQPrint.add(p);
-		}
-
-
-	}
-
-	public static void semReadFiletWait(Process p) {
-
-		if (semReadFile == 1)
-			semReadFile--;
-		else {
-			p.setProcessState(p, ProcessState.Waiting);
-			blockedQReadFile.add(p);
-		}
-
-
-	}
-
-	public static void semWriteFileWait(Process p) {
-		if (semWriteFile == 1)
-			semWriteFile--;
-		else {
-			p.setProcessState(p, ProcessState.Waiting);
-			blockedQTextInput.add(p);		}
-
-	}
-
-	public static void semTextInputWait(Process p) {
-
-		if (semTextInput == 1)
-			semTextInput--;
-		else {
-			p.setProcessState(p, ProcessState.Waiting);
-			blockedQTextInput.add(p);
-		}
-
-	}
-
-	/**
-	 * 
-	 * @param p the process that wants to post the semaphore
-	 */
-	public static void semPrintPost() {
-		semPrint++;
-		
-		if (!blockedQPrint.isEmpty())
-			readyQ.add(blockedQPrint.remove());
-	}
-
-	public static void semReadFilePost() {
-		semReadFile++;
-		
-		if (!blockedQReadFile.isEmpty())
-			readyQ.add(blockedQReadFile.remove());
-	}
-
-	public static void semWriteFilePost() {
-		semWriteFile++;
-		if (!blockedQWriteFile.isEmpty())
-			readyQ.add(blockedQWriteFile.remove());
-	}
-
-	public static void semTextInputPost() {
-		semTextInput++;
-		if (!blockedQTextInput.isEmpty())
-			readyQ.add(blockedQTextInput.remove());
 	}
 
 	/**
@@ -169,9 +84,37 @@ public class OperatingSystem {
 	 * all processes get to execute according to FCFS (First Come first Serve)
 	 */
 	public static void scheduler() {
-		while (!readyQ.isEmpty() ) {
-			Process p=(Process)readyQ.remove();
-			p.run();
+		while (!ProcessTable.isEmpty()) {
+
+			Process p = (Process) ProcessTable.get(0);
+
+			if (p.isSuspended()) {
+				System.out.println("Process " + p.processID + " resumes");
+				p.setSuspended(false);
+				p.resume();
+				p.setProcessState(p, ProcessState.Running);
+			} else {
+				System.out.println("Process " + p.processID + " starts");
+				p.start();
+			}
+				while (true) {
+					if (Process.getProcessState(p) == ProcessState.Waiting) {
+						System.out.println("Process " + p.processID + " is suspended");
+
+						p.suspend();
+						p.setSuspended(true);
+						ProcessTable.remove(p);
+						break;
+					}
+					if (Process.getProcessState(p) == ProcessState.Terminated) {
+						System.out.println("Process " + p.processID + " finishes");
+
+						ProcessTable.remove(p);
+						break;
+					}
+
+				}
+			
 
 		}
 
@@ -179,16 +122,14 @@ public class OperatingSystem {
 
 	public static void main(String[] args) {
 		ProcessTable = new ArrayList<Thread>();
-		readyQ = new LinkedList<Thread>();
-		blockedQPrint = new LinkedList<Thread>();
-		blockedQReadFile = new LinkedList<Thread>();
-		blockedQTextInput = new LinkedList<Thread>();
-		blockedQWriteFile = new LinkedList<Thread>();
+
 		createProcess(1);
 		createProcess(2);
 		createProcess(3);
 		createProcess(4);
 		createProcess(5);
+
+		System.out.println(ProcessTable);
 		scheduler();
 
 	}
