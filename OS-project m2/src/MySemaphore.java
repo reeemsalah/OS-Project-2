@@ -24,6 +24,8 @@ public class MySemaphore {
 		else
 		{
 			p.setProcessState(p, ProcessState.Waiting);
+			p.suspend();
+			p.setSuspended(true);
 			blockedQ.add(p);
 		}
 

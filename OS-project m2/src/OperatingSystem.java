@@ -88,7 +88,7 @@ public class OperatingSystem {
 
 			Process p = (Process) ProcessTable.get(0);
 
-			if (p.isSuspended()) {
+		if (p.isSuspended()) {
 				System.out.println("Process " + p.processID + " resumes");
 				p.setSuspended(false);
 				p.resume();
@@ -96,13 +96,11 @@ public class OperatingSystem {
 			} else {
 				System.out.println("Process " + p.processID + " starts");
 				p.start();
-			}
-				while (Process.getProcessState(p) == ProcessState.Running) {
+		}
+				while (true) {
 					if (Process.getProcessState(p) == ProcessState.Waiting) {
 						System.out.println("Process " + p.processID + " is suspended");
-
-						p.suspend();
-						p.setSuspended(true);
+						
 						ProcessTable.remove(p);
 						break;
 					}
