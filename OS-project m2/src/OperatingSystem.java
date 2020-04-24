@@ -97,20 +97,21 @@ public class OperatingSystem {
 				System.out.println("Process " + p.processID + " starts");
 				p.start();
 		}
-				while (true) {
+				while (p.getProcessState(p)!=ProcessState.Terminated); 
+					
 					if (Process.getProcessState(p) == ProcessState.Waiting) {
 						System.out.println("Process " + p.processID + " is suspended");
 						ProcessTable.remove(p);
-						break;
+						
 					}
 					if (Process.getProcessState(p) == ProcessState.Terminated) {
 						System.out.println("Process " + p.processID + " finishes");
 
 						ProcessTable.remove(p);
-						break;
+						
 					}
 
-				}
+				
 			
 
 		}
